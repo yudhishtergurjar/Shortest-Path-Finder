@@ -293,8 +293,7 @@
 
 
 
-
-import React, { useState, MouseEvent, WheelEvent } from 'react';
+import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Bus } from 'lucide-react';
@@ -311,16 +310,6 @@ interface Connection {
   distance: number;
   time: number;
   price: number;
-}
-
-// Define the type for the cities object
-interface CitiesMap {
-  [key: string]: City;
-}
-
-// Define the type for connections object
-interface ConnectionsMap {
-  [key: string]: Connection;
 }
 
 // Define the type for the measure options
@@ -389,13 +378,16 @@ const RouteSimulator: React.FC = () => {
 
       unvisited.delete(current);
 
-      Object.entries(graph[current]).forEach(([neighbor, value]) => {
-        if (!unvisited.has(neighbor)) return;
+      // Current is guaranteed to be a string here
+      const currentCity = current; // Assign to a new variable to preserve the type
       
-        const alt = distances[current as string] + value;
+      Object.entries(graph[currentCity]).forEach(([neighbor, value]) => {
+        if (!unvisited.has(neighbor)) return;
+
+        const alt = distances[currentCity] + value;
         if (alt < distances[neighbor]) {
           distances[neighbor] = alt;
-          previous[neighbor] = current as string;
+          previous[neighbor] = currentCity;
         }
       });
     }
